@@ -32,22 +32,22 @@ ORDER BY avg_price DESC;
 -- Avg and max price by ngbh and room type
 SELECT ROUND(AVG(price),2) AS avg_price, max(price) AS max_price, min(price) AS min_price, nbhood_full, room_type
 FROM airbnb_price_upd AS ap
-JOIN airbnb_room_type AS art ON art.listing_id = ap.listing_id
+INNER JOIN airbnb_room_type AS art ON art.listing_id = ap.listing_id
 GROUP BY 4,5
 ORDER BY max_price DESC;
 
 -- avg, min, max price by room_type
 SELECT ROUND(AVG(price),2) AS avg_price, max(price) AS max_price, min(price) AS min_price, room_type
 FROM airbnb_price_upd AS ap
-JOIN airbnb_room_type AS art ON art.listing_id = ap.listing_id
+INNER JOIN airbnb_room_type AS art ON art.listing_id = ap.listing_id
 GROUP BY room_type;
 
 -- average, min, and max room price by room type and hood
 WITH merged AS(
 SELECT ROUND(AVG(price),2) AS avg_price, max(price)  AS max_price, min(price)  AS min_price, room_type, nbhood_full
 FROM airbnb_price_upd AS apd
-JOIN airbnb_room_type AS art ON art.listing_id = apd.listing_id
-JOIN airbnb_last_review_upd AS alr ON alr.listing_id = apd.listing_id
+INNER JOIN airbnb_room_type AS art ON art.listing_id = apd.listing_id
+INNER JOIN airbnb_last_review_upd AS alr ON alr.listing_id = apd.listing_id
 GROUP BY room_type, nbhood_full)
 
 SELECT *, CASE
@@ -61,16 +61,16 @@ FROM merged;
 -- avg price per hood and number of apartments
 SELECT ROUND(avg(price),2) AS avg_price, count(*) AS 'number of rooms', SUBSTRING_INDEX(nbhood_full, ",",1) AS hood
 FROM airbnb_price_upd AS apd
-JOIN airbnb_room_type AS art ON art.listing_id = apd.listing_id
-JOIN airbnb_last_review_upd AS alr ON alr.listing_id = apd.listing_id
+INNER JOIN airbnb_room_type AS art ON art.listing_id = apd.listing_id
+INNER JOIN airbnb_last_review_upd AS alr ON alr.listing_id = apd.listing_id
 GROUP BY hood
 order by avg_price desc;
 
 -- most common room type per hood, min and max price
 SELECT SUBSTRING_INDEX(nbhood_full, ",",1) AS hood, room_type, count(*) AS 'number of rooms', min(price) as min_price, max(price) AS max_price
 FROM airbnb_price_upd AS apd
-JOIN airbnb_room_type AS art ON art.listing_id = apd.listing_id
-JOIN airbnb_last_review_upd AS alr ON alr.listing_id = apd.listing_id
+INNER JOIN airbnb_room_type AS art ON art.listing_id = apd.listing_id
+INNER JOIN airbnb_last_review_upd AS alr ON alr.listing_id = apd.listing_id
 GROUP BY hood, room_type
 order by 1,3;
 
@@ -86,9 +86,9 @@ ORDER BY no_reviews DESC;
 SELECT SUBSTRING_INDEX(nbhood_full, ",",1) AS hood, SUBSTRING_INDEX(last_review, " ", 1) AS month_of_last_review,
 room_type, count(*) AS no_reviews
 FROM airbnb_last_review AS alw
-JOIN airbnb_price AS ap
+INNER JOIN airbnb_price AS ap
 ON ap.listing_id = alw.listing_id
-JOIN airbnb_room_type AS art
+INNER JOIN airbnb_room_type AS art
 ON art.listing_id = alw.listing_id
 GROUP BY 2, 1, 3
 ORDER BY 1 DESC,4 DESC,2,3;
